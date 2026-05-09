@@ -1,0 +1,314 @@
+/* Animations */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.98); }
+}
+
+@keyframes hapticPulse {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(250, 204, 21, 0.8); }
+  50% { box-shadow: 0 0 60px rgba(250, 204, 21, 1); }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* App Title */
+.app-title {
+  font-size: 48px;
+  background: linear-gradient(135deg, #facc15 0%, #22c55e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+}
+
+.app-subtitle {
+  color: var(--text);
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Status Container */
+.status-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.status-indicator {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.status-indicator.connected {
+  color: #22c55e;
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+}
+
+.status-indicator.searching {
+  color: #facc15;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.status-indicator.disconnected {
+  color: #666;
+}
+
+.status-hint {
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+/* Connect Button */
+.connect-button {
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.connect-button:hover {
+  transform: scale(1.05);
+}
+
+.connect-button:active {
+  transform: scale(0.95);
+}
+
+/* Alert Card */
+.alert-card {
+  background: var(--code-bg);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideIn 0.3s ease-out;
+  border-left: 4px solid;
+  width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
+}
+
+.alert-card.danger {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.alert-card.warning {
+  border-left-color: #facc15;
+  background: rgba(250, 204, 21, 0.1);
+}
+
+.alert-card.info {
+  border-left-color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.alert-icon {
+  font-size: 24px;
+}
+
+.alert-message {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.alert-distance {
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.7;
+}
+
+/* Haptic Controls */
+#haptic-controls {
+  border-right: 1px solid var(--border);
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.intensity-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+
+.intensity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #facc15;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+}
+
+.intensity-slider:disabled::-webkit-slider-thumb {
+  background: #666;
+  cursor: not-allowed;
+}
+
+.intensity-value {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--text-h);
+  min-width: 45px;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin-top: 20px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #333;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #22c55e;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+input:disabled + .toggle-slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* System Status */
+#system-status {
+  padding: 24px 32px;
+  border-top: 1px solid var(--border);
+}
+
+.status-grid {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.status-item {
+  flex: 1;
+  text-align: center;
+}
+
+.status-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.status-value {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text-h);
+  margin-top: 8px;
+}
+
+.battery-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.battery-level {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #facc15);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  #haptic-controls {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .alert-card {
+    max-width: 100%;
+  }
+  
+  .status-grid {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+/* High Contrast Support */
+@media (prefers-contrast: high) {
+  .connect-button {
+    border: 2px solid currentColor;
+  }
+  
+  .alert-card {
+    border: 2px solid;
+  }
+}
