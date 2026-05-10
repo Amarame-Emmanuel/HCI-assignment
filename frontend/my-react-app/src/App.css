@@ -1,3 +1,16 @@
+/* Add this at the top of App.css to ensure proper box sizing */
+* {
+  box-sizing: border-box;
+}
+
+/* Hero section - adjust spacing */
+.hero {
+  text-align: center;
+  padding: 20px 0 10px 0;
+  margin: 0;
+  width: 100%;
+}
+
 /* Animations */
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -27,20 +40,45 @@
 
 /* App Title */
 .app-title {
-  font-size: 48px;
+   font-size: 48px;
   background: linear-gradient(135deg, #facc15 0%, #22c55e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
+  padding: 0;
   letter-spacing: 2px;
+  line-height: 1.2;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .app-subtitle {
   color: var(--text);
   font-size: 14px;
   opacity: 0.8;
+  margin: 0;
+  padding: 0;
+  line-height: 1.4;
 }
+
+/* Center section adjustments */
+#center {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  place-content: center;
+  place-items: center;
+  flex-grow: 1;
+  padding: 20px;
+  overflow: visible;
+}
+
+@media (max-width: 1024px) {
+  #center {
+    padding: 20px;
+    gap: 18px;
+  }
 
 /* Status Container */
 .status-container {
@@ -183,12 +221,12 @@
   min-width: 45px;
 }
 
-/* Toggle Switch */
+/* Large Toggle Switch - Better for Visually Impaired */
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 80px;
+  height: 44px;
   margin-top: 20px;
 }
 
@@ -196,6 +234,60 @@
   opacity: 0;
   width: 0;
   height: 0;
+  position: absolute;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #333333;
+  transition: 0.3s;
+  border-radius: 44px;
+  border: 2px solid #facc15;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 36px;
+  width: 36px;
+  left: 4px;
+  bottom: 2px;
+  background-color: #facc15;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+/* Checked state */
+input:checked + .toggle-slider {
+  background-color: #22c55e;
+  border-color: #22c55e;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(36px);
+  background-color: #ffffff;
+}
+
+/* Disabled state */
+input:disabled + .toggle-slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Focus state */
+.toggle-switch input:focus-visible + .toggle-slider {
+  outline: 3px solid #facc15;
+  outline-offset: 3px;
+}
+
+/* Active/Press effect */
+.toggle-switch input:active:not(:disabled) + .toggle-slider:before {
+  transform: scale(0.9);
 }
 
 .toggle-slider {
@@ -302,6 +394,23 @@ input:disabled + .toggle-slider {
   }
 }
 
+.app-title {
+    font-size: 36px;
+    white-space: normal;
+    word-break: keep-all;
+  }
+}
+
+
+/* For very small screens */
+@media (max-width: 480px) {
+  .app-title {
+    font-size: 32px;
+  }
+  .app-subtitle {
+    font-size: 12px;
+  }
+}
 /* High Contrast Support */
 @media (prefers-contrast: high) {
   .connect-button {
