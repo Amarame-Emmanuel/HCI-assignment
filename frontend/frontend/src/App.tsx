@@ -1,40 +1,80 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import './App.css'
 
+// Type definitions
+interface AlertMessage {
+  message: string;
+  distance: number | null;
+  direction: string | null;
+}
+
+// Component
 function App() {
-  // State Management
-  const [isConnected, setIsConnected] = useState(false)
-  const [isConnecting, setIsConnecting] = useState(false)
-  const [crowdMode, setCrowdMode] = useState(false)
-  const [hapticIntensity, setHapticIntensity] = useState(70)
-  const [batteryLevel, setBatteryLevel] = useState(90)
-  const [obstacleDistance, setObstacleDistance] = useState(null)
-  const [obstacleDirection, setObstacleDirection] = useState(null)
-  const [alertMessage, setAlertMessage] = useState('')
-  const [voiceGuidance, setVoiceGuidance] = useState(true)
+  // State Management with proper types
+  const [isConnected, setIsConnected] = useState<boolean>(false)
+  const [isConnecting, setIsConnecting] = useState<boolean>(false)
+  const [crowdMode, setCrowdMode] = useState<boolean>(false)
+  const [hapticIntensity, setHapticIntensity] = useState<number>(70)
+  const [batteryLevel, setBatteryLevel] = useState<number>(90)
+  const [obstacleDistance, setObstacleDistance] = useState<number | null>(null)
+  const [obstacleDirection, setObstacleDirection] = useState<string | null>(null)
+  const [alertMessage, setAlertMessage] = useState<string>('')
+  const [voiceGuidance, setVoiceGuidance] = useState<boolean>(true)
   
   // Refs for simulation
-  const intervalRef = useRef(null)
-  const audioRef = useRef(null)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  
+  // Speech synthesis for voice guidance
+  const speakAlert = (message: string): void => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(message)
+      utterance.rate = 0.9
+      utterance.pitch = 1.1
+      utterance.volume = 1
+      window.speechSynthesis.cancel() // Clear previous
+      window.speechSynthesis.speak(utterance)
+    }
+  }
+  
+  // Simulate haptic feedback (visual representation)
+  const triggerHapticFeedback = (intensity: number, distance: number): void => {
+    const hapticElement = document.createElement('div')
+    hapticElement.className = 'haptic-feedback'
+    hapticElement.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: ${intensity}px;
+      height: ${intensity}px;
+      background: radial-gradient(circle, rgba(250,204,21,0.8) 0%, rgba(250,204,21,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1000;
+      animation: hapticPulse ${Math.max(0.2, 1 - distance / 5)}s ease-out;
+    `
+    document.body.appendChild(hapticElement)
+    setTimeout(() => hapticElement.remove(), 500)
+  }
   
   // Simulate obstacle detection (would come from hardware sensors)
-  const simulateObstacleDetection = useCallback(() => {
+  const simulateObstacleDetection = useCallback((): void => {
     if (!isConnected) return
     
     // Random obstacle generation for demo
     const hasObstacle = Math.random() < 0.3 // 30% chance
     if (hasObstacle) {
-      const distances = [0.5, 1, 1.5, 2, 2.5, 3]
-      const directions = ['front', 'left', 'right', 'front-left', 'front-right']
-      const distance = distances[Math.floor(Math.random() * distances.length)]
-      const direction = directions[Math.floor(Math.random() * directions.length)]
+      const distances: number[] = [0.5, 1, 1.5, 2, 2.5, 3]
+      const directions: string[] = ['front', 'left', 'right', 'front-left', 'front-right']
+      const distance: number = distances[Math.floor(Math.random() * distances.length)]
+      const direction: string = directions[Math.floor(Math.random() * directions.length)]
       
       setObstacleDistance(distance)
       setObstacleDirection(direction)
       
       // Generate alert based on distance
-      let alert = ''
-      let intensity = hapticIntensity
+      let alert: string = ''
+      let intensity: number = hapticIntensity
       
       if (distance < 1) {
         alert = `DANGER! ${direction.toUpperCase()} obstacle ${distance.toFixed(1)} meters!`
@@ -63,41 +103,8 @@ function App() {
     }
   }, [isConnected, hapticIntensity, voiceGuidance])
   
-  // Speech synthesis for voice guidance
-  const speakAlert = (message) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(message)
-      utterance.rate = 0.9
-      utterance.pitch = 1.1
-      utterance.volume = 1
-      window.speechSynthesis.cancel() // Clear previous
-      window.speechSynthesis.speak(utterance)
-    }
-  }
-  
-  // Simulate haptic feedback (visual representation)
-  const triggerHapticFeedback = (intensity, distance) => {
-    const hapticElement = document.createElement('div')
-    hapticElement.className = 'haptic-feedback'
-    hapticElement.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: ${intensity}px;
-      height: ${intensity}px;
-      background: radial-gradient(circle, rgba(250,204,21,0.8) 0%, rgba(250,204,21,0) 70%);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 1000;
-      animation: hapticPulse ${Math.max(0.2, 1 - distance / 5)}s ease-out;
-    `
-    document.body.appendChild(hapticElement)
-    setTimeout(() => hapticElement.remove(), 500)
-  }
-  
   // Handle connect button click
-  const handleConnect = async () => {
+  const handleConnect = async (): Promise<void> => {
     if (!isConnected && !isConnecting) {
       setIsConnecting(true)
       setAlertMessage('Searching for band...')
@@ -124,10 +131,10 @@ function App() {
   }
   
   // Handle crowd mode toggle
-  const handleCrowdModeToggle = () => {
-    const newMode = !crowdMode
+  const handleCrowdModeToggle = (): void => {
+    const newMode: boolean = !crowdMode
     setCrowdMode(newMode)
-    const message = newMode 
+    const message: string = newMode 
       ? 'Crowd mode enabled. Ignoring moving people, alerting for walls and static obstacles.'
       : 'Standard mode enabled. Alerting for all obstacles.'
     setAlertMessage(message)
@@ -147,14 +154,14 @@ function App() {
   }, [])
   
   // Get button text and style
-  const getButtonText = () => {
+  const getButtonText = (): string => {
     if (isConnected) return '✔ CONNECTED'
     if (isConnecting) return 'SEARCHING...'
     return 'CONNECT BAND'
   }
   
-  const getButtonStyle = () => {
-    const baseStyle = {
+  const getButtonStyle = (): React.CSSProperties => {
+    const baseStyle: React.CSSProperties = {
       width: '220px',
       height: '220px',
       borderRadius: '50%',
@@ -185,10 +192,7 @@ function App() {
         ...baseStyle,
         backgroundColor: '#facc15',
         color: '#000',
-        boxShadow: '0 0 50px rgba(250, 204, 21, 0.9)',
-        ':hover': {
-          transform: 'scale(1.05)'
-        }
+        boxShadow: '0 0 50px rgba(250, 204, 21, 0.9)'
       }
     }
   }
@@ -251,7 +255,7 @@ function App() {
               min="0"
               max="100"
               value={hapticIntensity}
-              onChange={(e) => setHapticIntensity(parseInt(e.target.value))}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHapticIntensity(parseInt(e.target.value))}
               disabled={!isConnected}
               className="intensity-slider"
               aria-label="Haptic intensity"
@@ -289,7 +293,7 @@ function App() {
             <input
               type="checkbox"
               checked={voiceGuidance}
-              onChange={(e) => setVoiceGuidance(e.target.checked)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVoiceGuidance(e.target.checked)}
               disabled={!isConnected}
             />
             <span className="toggle-slider"></span>
