@@ -123,7 +123,7 @@ export const Sensor = {
       };
       console.log('[Sensor] Reading:', data);
       if (sensorCallback) sensorCallback(data);
-    }, 600);
+    }, 5000);
 
     console.log('[Sensor] Simulator started.');
   },
@@ -231,9 +231,14 @@ export const Watchdog = {
   },
 
   _simulateHeartbeats(): void {
-    setInterval(() => {
+    const fakeHeartbeat = setInterval(() => {
       this.receiveHeartbeat({ batteryPercent: 90 });
     }, 2000);
+
+    setTimeout(() => {
+      clearInterval(fakeHeartbeat);
+      console.log('[Watchdog Test] Fake signal killed! Emergency alarm in 5s...');
+    }, 15000);
   },
 };
 
@@ -254,13 +259,21 @@ export const SafeStep = {
   },
 
   // Call when user taps "CONNECT BAND"
-  connect(statusCallback: (status: ConnectionStatus, data: number | null) => void): void {
+ connect(
+    statusCallback: (status: ConnectionStatus, data: number | null) => void,
+    onSensorUpdate: (data: SensorData) => void 
+  ): void {
     console.log('[SafeStep] Connecting to band...');
     setTimeout(() => {
       console.log('[SafeStep] Band connected.');
       Haptic.fire('connected');
       statusCallback('connected', null);
-      Sensor.start((data) => Navigation.process(data));
+      
+      // We pass the data to the brain (Navigation), AND to the screen (onSensorUpdate)
+      Sensor.start((data) => {
+        Navigation.process(data); 
+        onSensorUpdate(data);
+      });
       Watchdog.start(statusCallback);
     }, 1500);
   },

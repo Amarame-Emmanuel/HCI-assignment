@@ -182,3 +182,112 @@
     border-right-color: var(--border);
   }
 }
+
+/* =========================================
+   CUSTOM TOGGLE SWITCH (Left/Right Slider)
+   ========================================= */
+
+/* 1. The container (the pill shape outline) */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin-top: 10px;
+}
+
+/* 2. Hide the ugly default HTML square checkbox */
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* 3. The sliding track (Gray when OFF) */
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #334155; /* Dark gray */
+  transition: .4s;
+  border-radius: 34px; /* Makes the edges round */
+}
+
+/* 4. The sliding circle inside (The button) */
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%; /* Makes it a perfect circle */
+}
+
+/* 5. When clicked (Checked): Change background to Green */
+.toggle-switch input:checked + .toggle-slider {
+  background-color: #22c55e; /* SafeStep Green */
+}
+
+/* 6. When clicked (Checked): Move the circle to the RIGHT */
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* Make it glow a bit so it matches the Connect button */
+.toggle-switch input:checked + .toggle-slider {
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+}
+
+/* =========================================
+   DYNAMIC BATTERY ICON
+   ========================================= */
+
+/* 1. Wrap the whole battery to keep it centered */
+.battery-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px auto;
+}
+
+/* 2. The outer shell of the battery */
+.battery-body {
+  width: 40px;
+  height: 18px;
+  border: 2px solid #94a3b8; /* Light gray border */
+  border-radius: 4px;
+  padding: 2px; /* Leaves a tiny gap between the border and the juice */
+  position: relative;
+}
+
+/* 3. The little bump on the right side */
+.battery-bump {
+  width: 4px;
+  height: 8px;
+  background-color: #94a3b8;
+  border-radius: 0 3px 3px 0;
+}
+
+/* 4. The juice inside! (It animates smoothly when changing) */
+.battery-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease-in-out, background-color 0.5s ease;
+}
+
+/* 5. The Colors (Green > 50%, Yellow > 20%, Red < 20%) */
+.battery-fill.high {
+  background-color: #22c55e; /* Green */
+}
+.battery-fill.medium {
+  background-color: #facc15; /* Yellow */
+}
+.battery-fill.low {
+  background-color: #ef4444; /* Red */
+}
